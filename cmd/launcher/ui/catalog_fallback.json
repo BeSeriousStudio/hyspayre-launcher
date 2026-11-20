@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "published_at": "2026-11-20T00:42:42Z",
+  "launcher": {
+    "version": "0.1.0",
+    "url": "",
+    "sha256": "",
+    "size": 0
+  },
+  "games": [
+    {
+      "id": "hyspayre",
+      "title": "Hyspayre",
+      "tagline": "THE KINGDOM OF CARDS",
+      "description": "Erhebe dich vom ersten Duell zum Monarchen. Ein taktisches, handgemaltes Fantasy-Kartenspiel.",
+      "genre": "STRATEGIE · KARTENSPIEL",
+      "version": "",
+      "status": "upcoming",
+      "package_url": "",
+      "sha256": "",
+      "size": 0,
+      "executable": "",
+      "image_url": "",
+      "patch_notes": ""
+    }
+  ],
+  "signature": "nlurEBAVF+WEeBb01kcb3s+QHLU3sxW0+kinaO6ISpV82gnupHFyAjfMTf80gFNvNdU2Z1zD/S6B4BjL5CmUDQ=="
+}

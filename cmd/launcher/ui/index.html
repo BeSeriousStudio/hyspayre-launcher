@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="de"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0a1220"><title>Hyspayre · Launcher</title>
+<link rel="stylesheet" href="/style.css">
+</head><body>
+<div class="frame">
+  <aside class="sidebar">
+    <div class="brand"><img src="/assets/hyspayre-emblem.png" alt=""><div class="brand-text"><strong>HYSPAYRE</strong><small>GAME LAUNCHER</small></div></div>
+    <div class="navlabel">KÖNIGREICH</div>
+    <nav aria-label="Client-Navigation" class="nav">
+      <button class="navitem selected" data-view="discover"><span class="navicon">⌂</span><span>Entdecken</span></button>
+      <button class="navitem" data-view="library"><span class="navicon">▦</span><span>Meine Bibliothek</span><span id="installed-count" class="count">0</span></button>
+      <button class="navitem" data-view="downloads"><span class="navicon">⇩</span><span>Downloads & Updates</span></button>
+      <button class="navitem" data-view="community"><span class="navicon">♧</span><span>Freunde & Spieler</span><span class="count hidden" id="requests-count">0</span></button>
+    </nav>
+    <div class="navlabel second">KONTO & SYSTEM</div>
+    <nav class="nav">
+      <button class="navitem" data-view="settings"><span class="navicon">⚙</span><span>Einstellungen</span></button>
+      <button class="navitem" data-view="account"><span class="navicon">♙</span><span>Mein Spielaccount</span></button>
+    </nav>
+    <div class="sidebottom"><span class="dot" id="status-dot"></span><span id="connection">VERBINDE ...</span><small id="side-version">CLIENT 0.2.3</small></div>
+  </aside>
+  <div class="workspace">
+    <header class="topbar">
+      <div class="crumb"><span class="diamond">◆</span><span id="view-breadcrumb">ENTDECKEN</span></div>
+      <div class="top-actions"><span id="update-alert" class="mini-update hidden">NEUES CLIENT-UPDATE</span><button class="link-icon" data-view="community" title="Spieler suchen">⌕</button><button class="account-btn" data-view="account" id="top-account">MEIN ACCOUNT <span>♙</span></button><button class="close-btn" id="close-btn" title="Launcher schließen">✕</button></div>
+    </header>
+    <main class="content">
+      <section id="view-discover" class="view active">
+        <div class="hero">
+          <img src="https://hyspayre.com/assets/hero.webp" alt="Hyspayre Spielwelt" class="hero-bg">
+          <div class="hero-shade"></div>
+          <div class="hero-content"><div class="eyebrow"><i></i> DAS KÖNIGREICH DER KARTEN</div><h1>DIE KRONE<br>WARTET <em>NICHT.</em></h1><p>Wähle deine Karten. Beherrsche das Duell. Erhebe dich vom ersten Rang bis zum Monarchen.</p><div class="hero-actions"><button id="hero-primary" class="btn primary">SPIEL ENTDECKEN <span>↗</span></button><button class="btn line" data-open="https://hyspayre.com/spiel.html">MEHR ERFAHREN</button></div></div>
+          <div class="hero-status"><span class="pulse"></span><span id="hero-status">HYSPAYRE · IN ENTWICKLUNG</span></div>
+        </div>
+        <div class="section-head"><div><span class="eyebrow muted">DEINE REISE BEGINNT HIER</span><h2>UNSERE <span>SPIELE</span></h2></div><small>SPIELE AUS EINER HAND</small></div>
+        <div id="games-grid" class="games-grid"></div>
+        <div class="section-head secondary"><div><span class="eyebrow muted">NEUE WELTEN</span><h2>MEHR ALS <span>EIN KÖNIGREICH.</span></h2></div></div>
+        <div class="roadmap"><span class="road-icon">✧</span><div><strong>Ein Launcher. Viele Welten.</strong><p>Wenn weitere Spiele erscheinen, tauchen sie automatisch hier auf. Du benötigst keinen zweiten Client.</p></div><span class="road-text">IN PLANUNG</span></div>
+      </section>
+      <section id="view-library" class="view"><div class="page-head"><div class="eyebrow">DEINE SPIELWELTEN</div><h1>MEINE <span>BIBLIOTHEK.</span></h1><p>Installiere, starte oder aktualisiere deine Spiele.</p></div><div id="library-grid" class="library-grid"></div></section>
+      <section id="view-downloads" class="view"><div class="page-head"><div class="eyebrow">BEREIT FÜR DIE NÄCHSTE SCHLACHT</div><h1>DOWNLOADS <span>& UPDATES.</span></h1><p>Jedes Paket wird vor der Installation über seine SHA-256-Prüfsumme überprüft.</p></div><div id="download-list" class="download-list"></div><div class="glass info"><strong>SICHERE INSTALLATION</strong><p>Downloads werden vollständig überprüft und in einem separaten Ordner vorbereitet. Erst danach wird eine vorhandene Installation ersetzt. Deine Godot-Nutzerdaten bleiben dabei erhalten.</p></div></section>
+      <section id="view-account" class="view">
+        <div class="page-head"><div class="eyebrow">DEINE IDENTITÄT IM KÖNIGREICH</div><h1>MEIN <span>SPIELACCOUNT.</span></h1><p>Melde dich mit deinem bestehenden Hyspayre-Konto an. Dein Profil ist identisch mit dem im Spiel und auf der Website.</p></div>
+        <div id="login-panel" class="glass login-panel">
+          <div class="eyebrow muted">SUPABASE · SICHERER LOGIN</div><h2>WILLKOMMEN ZURÜCK.</h2>
+          <form id="login-form" class="login-fields" autocomplete="on">
+            <label for="login-email">E-MAIL-ADRESSE</label><input id="login-email" type="email" autocomplete="username" required maxlength="254" placeholder="name@beispiel.de">
+            <label for="login-password">PASSWORT</label><input id="login-password" type="password" autocomplete="current-password" required placeholder="Dein Passwort">
+            <label class="remember"><input type="checkbox" id="login-remember" checked> Auf diesem PC angemeldet bleiben</label>
+            <button type="submit" class="btn primary" id="login-submit">ANMELDEN ↗</button>
+          </form>
+          <div class="account-external"><button data-open="https://hyspayre.com/account.html" class="text-link">Account erstellen ↗</button><button data-open="https://hyspayre.com/account.html" class="text-link">Passwort vergessen? ↗</button></div>
+          <p class="hint">Die Anmeldung erfolgt verschlüsselt über Supabase. Der Launcher speichert niemals dein Passwort.</p>
+        </div>
+        <div id="account-panel" class="hidden">
+          <div class="glass account-identity"><div class="avatar-shield" id="self-avatar">♛</div><div class="identity-copy"><span class="eyebrow muted">DEIN PROFIL</span><h2 id="self-name">Spieler</h2><p id="self-email"></p><div class="tag-row"><span id="self-rank-tag" class="mini-tag">BRONZE 1</span><span id="self-status" class="mini-tag subdued">ANGEMELDET</span></div></div><button class="btn line" id="logout-btn">ABMELDEN</button></div>
+          <div class="account-stats"><div class="glass stat"><span>AKTUELLER RANG</span><strong id="self-rank">Bronze 1</strong><div class="rank-track"><i id="self-rp-fill"></i></div><small id="self-rp">0 / 100 RP</small></div><div class="glass stat"><span>CREDITS</span><strong id="self-coins">0</strong><small>Deine Spielwährung</small></div><div class="glass stat"><span>RANKED-SPIELE</span><strong id="self-matches">0</strong><small id="self-wins">0 Siege</small></div></div>
+          <div class="glass info"><strong>DEIN ACCOUNT IN ALLEN SPIELEN</strong><p>Profilbild, Skins, Benutzername und Account-Einstellungen kannst du auf der Website verwalten. Deine Freunde verwaltest du direkt im Launcher.</p><div class="actions-inline"><button class="btn primary" data-view="community">FREUNDE ANSEHEN ♧</button><button class="btn line" data-open="https://hyspayre.com/account.html">PROFIL BEARBEITEN ↗</button></div></div>
+        </div>
+      </section>
+      <section id="view-community" class="view">
+        <div class="page-head"><div class="eyebrow">DAS KÖNIGREICH VERBINDET</div><h1>DEINE <span>COMMUNITY.</span></h1><p>Suche andere Spieler, sieh dir ihre Profile an und verwalte Freunde direkt im Launcher.</p></div>
+        <div id="community-locked" class="glass info"><strong>ZUERST ANMELDEN</strong><p>Bitte melde dich mit deinem Hyspayre-Account an, um Spielerprofile und Freundschaften zu sehen.</p><button class="btn primary" data-view="account">ZUM LOGIN ↗</button></div>
+        <div id="community-panel" class="hidden">
+          <div class="social-grid">
+            <div class="glass social-pane"><div class="eyebrow muted">SPIELERSUCHE</div><h2>SPIELER FINDEN.</h2><label class="search-control"><span aria-hidden="true">⌕</span><input type="search" id="people-query" placeholder="Benutzernamen suchen …" maxlength="30" autocomplete="off" aria-label="Spielername"></label><p class="hint">Ergebnisse erscheinen automatisch beim Tippen.</p><div id="search-count" class="social-summary"></div><div id="search-results" class="people-list" aria-live="polite"><p class="muted-msg">Gib einen Spielernamen ein.</p></div><button class="btn line hidden" id="people-more" type="button">WEITERE SPIELER LADEN ↓</button></div>
+            <div class="glass social-pane"><div class="social-pane-head"><div><div class="eyebrow muted">DEINE KONTAKTE</div><h2>FREUNDESLISTE.</h2></div><button class="icon-control" id="friends-refresh" title="Freunde aktualisieren" aria-label="Freundesliste aktualisieren">↻</button></div>
+              <div class="friend-section-title">FREUNDE <span id="friends-total">0</span></div><div id="friends-list" class="people-list"></div>
+              <div class="friend-section-title">ANFRAGEN ERHALTEN <span id="incoming-total">0</span></div><div id="incoming-list" class="people-list"></div>
+              <div class="friend-section-title">ANFRAGEN GESENDET <span id="sent-total">0</span></div><div id="sent-list" class="people-list"></div>
+            </div>
+          </div>
+          <div id="social-profile" class="glass profile-detail hidden" aria-live="polite"></div>
+          <p class="hint">Für andere Spieler sind nur öffentliche Profildaten wie Profilname, Avatar, Rang und Matchstatistik sichtbar – keine E-Mail-Adressen.</p>
+        </div>
+      </section>
+      <section id="view-settings" class="view"><div class="page-head"><div class="eyebrow">DEIN CLIENT, DEINE ENTSCHEIDUNGEN</div><h1>EINSTELLUNGEN<span>.</span></h1><p>Bestimme den Speicherort und kontrolliere die installierten Versionen.</p></div><div class="settings-grid"><div class="glass panel"><span class="eyebrow muted">INSTALLATION</span><h3>Spielverzeichnis</h3><p>Alle neuen Spiele werden in diesem Ordner gespeichert.</p><form id="settings-form" class="setting-form"><label for="install-root">ABSOLUTER ORDNERPFAD</label><input id="install-root" type="text" spellcheck="false" autocomplete="off"><div class="small-note">Der Ordner kann nur geändert werden, solange noch kein Spiel installiert ist.</div><button type="submit" class="btn primary">SPEICHERN</button></form></div><div class="glass panel"><span class="eyebrow muted">CLIENT</span><h3>Launcher-Version</h3><p id="client-ver">0.2.3</p><div class="rule"></div><p id="update-description">Suche nach neuen Client-Versionen.</p><button id="refresh-catalog" class="btn line">JETZT NACH UPDATES SUCHEN</button><button id="update-client" class="btn primary hidden">CLIENT AKTUALISIEREN</button></div></div></section>
+    </main>
+    <footer class="bottom-bar"><span>© 2026 HYSPAYRE · THE KINGDOM OF CARDS</span><span id="bottom-status">BEREIT</span><button data-open="https://hyspayre.com/rechtliches.html">RECHTLICHES ↗</button></footer>
+  </div>
+</div>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<script>window.HYSPAYRE_LOCAL_TOKEN="__HYSPAYRE_SESSION__";if(location.search)history.replaceState(null,"",location.pathname);</script><script src="/app.js"></script>
+</body></html>

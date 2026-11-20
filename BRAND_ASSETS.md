@@ -1,13 +1,17 @@
-# Hyspayre brand assets
+# Hyspayre artwork and trademark review
 
-`cmd/launcher/ui/assets/hyspayre-emblem.png` and `setup/hyspayre.ico`
-show the official blue Hyspayre diamond from the user’s website.
+The launcher source archive includes these bundled files:
 
-The MIT license covers source code only. Artwork and trademarks have not
-been independently relicensed by the assistant. Before publishing the source
-repository with these files, obtain and publish an explicit license/permission
-from the logo rights holder, or substitute an openly licensed mark. SignPath
-Foundation eligibility is not guaranteed.
+- `cmd/launcher/ui/assets/hyspayre-emblem.png`
+- `setup/hyspayre.ico`
+- `setup/welcome-banner.png`
 
+The `LICENSE` file covers source code, not these images by default. The artwork rights and trademark permissions have **not** been verified.
 
-When publishing a public repository for SignPath or GitHub, confirm that you own the rights to the official logo and any bundled artwork.
+## Decide before applying to SignPath Foundation
+
+**Option A — open-license the images:** If you hold all necessary rights and genuinely want others to use, modify, and redistribute the artworks, explicitly publish an appropriate open license for all three image files. For example, you may explicitly license them under the same MIT terms as the code, and keep a separate factual statement about trademark ownership. Do **not** do this if you lack rights or want to keep the images exclusive.
+
+**Option B — keep the branded images proprietary:** Replace all three with images whose licenses permit open redistribution in the signed project. Confirm that the installer and binaries actually use only those replacements. Merely excluding the image files from GitHub while embedding them into the installer does not solve the SignPath Foundation requirement.
+
+**ACTION REQUIRED:** Record the chosen actual license, copyright holder and permission evidence here before declaring the project fully open source or filing an application. Do not claim the Foundation has approved the project before it has.

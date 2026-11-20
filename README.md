@@ -93,3 +93,15 @@ Version 0.2.3 adds a branded Windows welcome screen for the setup executable.
 It uses the official Hyspayre logo and artwork, but still installs per-user
 without administrator rights. If PowerShell WPF is unavailable, the installer
 falls back to simple Windows dialog boxes.
+
+## Code signing policy
+
+[Code signing policy](CODE_SIGNING_POLICY.md) — Windows signing through SignPath Foundation is planned, **not approved or enabled** for this release.
+
+## Privacy
+
+[Desktop launcher privacy information](PRIVACY.md) — **draft requiring operator review before public release**, and [Hyspayre legal/privacy page](https://hyspayre.com/rechtliches.html).
+
+## Artwork licensing
+
+See [BRAND_ASSETS.md](BRAND_ASSETS.md). Rights and open-license choices for the bundled brand imagery are not finalized.

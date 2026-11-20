@@ -59,3 +59,12 @@ The Ed25519 private key is **not** needed or allowed in public builds.
 
 Even a signed EXE may initially trigger Microsoft SmartScreen. Signing improves
 publisher identity and provenance but does not promise zero warnings.
+
+## Release readiness documents
+
+- [Code signing policy](CODE_SIGNING_POLICY.md)
+- [Privacy notice (draft)](PRIVACY.md)
+- [Artwork rights review](BRAND_ASSETS.md)
+- [Release checklist](RELEASE_CHECKLIST.md)
+
+**Important:** SignPath Foundation's terms also require privacy disclosure during installation and appropriate options for disabling unsolicited data transfers. The current installer needs a corresponding implementation change; a Markdown document alone is not enough.

@@ -38,6 +38,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--identity', default='Hyspayre.Development', help='Exact Partner Center package/identity name')
     ap.add_argument('--publisher', default='CN=Hyspayre-Development', help='Exact Partner Center Publisher DN')
+    ap.add_argument('--publisher-display-name', default='BeSeriousStudio',
+                    help='Exact Partner Center Package/Properties/PublisherDisplayName')
     ap.add_argument('--out', default=str(ROOT / 'msix/staging'))
     ap.add_argument('--exe', default=str(ROOT / 'dist/Hyspayre-Launcher.exe'))
     args = ap.parse_args()
@@ -45,6 +47,8 @@ def main():
         ap.error('Invalid package identity; use the exact Partner Center value')
     if not args.publisher.startswith('CN=') or len(args.publisher) > 400:
         ap.error('Publisher must be the exact certificate distinguished name from Partner Center, beginning with CN=')
+    if not args.publisher_display_name.strip():
+        ap.error('Publisher display name must not be empty; use the exact value from Partner Center')
     if not Path(args.exe).is_file():
         ap.error('Missing compiled launcher EXE; first run python scripts/build.py')
     out = Path(args.out).resolve()
@@ -60,6 +64,7 @@ def main():
     # XML escape attribute values. MSIX package identity/publisher MUST later
     # match Partner Center precisely or Store submission will be rejected.
     name, publisher = escape(args.identity, {'"':'&quot;'}), escape(args.publisher, {'"':'&quot;'})
+    publisher_display_name = escape(args.publisher_display_name)
     xml = f'''<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
          xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
@@ -69,7 +74,7 @@ def main():
   <Identity Name="{name}" Publisher="{publisher}" Version="{PACKAGE_VERSION}" ProcessorArchitecture="x64" />
   <Properties>
     <DisplayName>Hyspayre Launcher</DisplayName>
-    <PublisherDisplayName>Hyspayre</PublisherDisplayName>
+    <PublisherDisplayName>{publisher_display_name}</PublisherDisplayName>
     <Description>Hyspayre Spielebibliothek, Updates und Community</Description>
     <Logo>Assets\\StoreLogo.png</Logo>
   </Properties>
@@ -94,7 +99,7 @@ def main():
     ET.fromstring(xml)
     (out / 'AppxManifest.xml').write_text(xml, encoding='utf-8')
     print(f'Staged: {out}')
-    print(f'MSIX version {PACKAGE_VERSION}, identity={args.identity}, publisher={args.publisher}')
+    print(f'MSIX version {PACKAGE_VERSION}, identity={args.identity}, publisher={args.publisher}, publisherDisplayName={args.publisher_display_name}')
     print('UNSIGNED package; NOT installable via website until signed by trusted certificate.')
     if args.identity == 'Hyspayre.Development' or args.publisher == 'CN=Hyspayre-Development':
         print('DEV IDENTITY – DO NOT SUBMIT TO THE MICROSOFT STORE.')

@@ -1,0 +1,68 @@
+name: Build Microsoft Store MSIX (unsigned)
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'cmd/**'
+      - 'internal/**'
+      - 'scripts/**'
+      - 'setup/**'
+      - 'go.mod'
+      - '.github/workflows/build-msix.yml'
+permissions:
+  contents: read
+jobs:
+  msix:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+      - name: Install Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.23'
+      - name: Install Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install packaging support
+        run: python -m pip install "Pillow>=10,<13"
+      - name: Build launcher and regular EXE installer
+        shell: pwsh
+        run: python scripts/build.py
+      - name: Stage Microsoft Store MSIX
+        shell: pwsh
+        env:
+          MSIX_IDENTITY_NAME: ${{ vars.MSIX_IDENTITY_NAME }}
+          MSIX_PUBLISHER: ${{ vars.MSIX_PUBLISHER }}
+        run: |
+          if ([string]::IsNullOrWhiteSpace($env:MSIX_IDENTITY_NAME) -or [string]::IsNullOrWhiteSpace($env:MSIX_PUBLISHER)) {
+            Write-Warning 'Partner Center Identity/Publisher missing: building UNSIGNED DEV-ONLY preview. Set Repository Variables to build Store package.'
+            python scripts/build_msix.py
+          } else {
+            python scripts/build_msix.py --identity "$env:MSIX_IDENTITY_NAME" --publisher "$env:MSIX_PUBLISHER"
+          }
+      - name: Create MSIX with Windows SDK
+        shell: pwsh
+        run: |
+          $sdkBin = Join-Path ${env:ProgramFiles(x86)} 'Windows Kits\10\bin'
+          $makeappx = Get-ChildItem -LiteralPath $sdkBin -Filter makeappx.exe -Recurse -ErrorAction Stop |
+            Where-Object { $_.FullName -match '\\x64\\makeappx\.exe$' } |
+            Sort-Object FullName -Descending | Select-Object -First 1
+          if (!$makeappx) { throw 'Windows SDK MakeAppx.exe not found' }
+          & $makeappx.FullName pack /d "msix/staging" /p "dist/HyspayreLauncher_1.2.5.0_x64.msix" /o
+          if ($LASTEXITCODE -ne 0) { throw "MakeAppx pack failed: $LASTEXITCODE" }
+          & $makeappx.FullName unpack /p "dist/HyspayreLauncher_1.2.5.0_x64.msix" /d "msix/verify" /o
+          if ($LASTEXITCODE -ne 0) { throw "MSIX verification failed: $LASTEXITCODE" }
+          if (!(Test-Path 'msix/verify/Hyspayre-Launcher.exe')) { throw 'Launcher missing inside MSIX' }
+          Write-Host 'SUCCESS: Unsigned Microsoft Store MSIX created and unpack-verified.'
+      - name: Upload unsigned artifacts (not website-ready)
+        uses: actions/upload-artifact@v4
+        with:
+          name: hyspayre-025-unsigned-store-msix-and-classic-installer
+          if-no-files-found: error
+          path: |
+            dist/HyspayreLauncher_1.2.5.0_x64.msix
+            dist/Hyspayre-Setup.exe
+            dist/Hyspayre-Launcher.exe

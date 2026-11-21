@@ -1,6 +1,6 @@
 //go:build windows
 
-// Hyspayre Launcher Setup 0.2.3
+// Hyspayre Launcher Setup 0.2.5
 // Per-user Windows installer; no administrator rights and no security bypass.
 package main
 
@@ -23,12 +23,12 @@ import (
 	"unsafe"
 )
 
-//go:embed payload.zip welcome-banner.png
+//go:embed payload.zip welcome-banner.png hyspayre.ico
 var bundled embed.FS
 
 const (
 	appName     = "Hyspayre Launcher"
-	appVersion  = "0.2.3"
+	appVersion  = "0.2.5"
 	regPath     = `HKCU\Software\Microsoft\Windows\CurrentVersion\Uninstall\HyspayreLauncher`
 	mbOK        = 0x00000000
 	mbYesNo     = 0x00000004
@@ -95,12 +95,20 @@ func welcomeDialog(dir string) (bool, bool, error) {
 	defer os.RemoveAll(tempDir)
 
 	bannerPath := filepath.Join(tempDir, "welcome-banner.png")
+	iconPath := filepath.Join(tempDir, "hyspayre.ico")
 	if err := os.WriteFile(bannerPath, banner, 0600); err != nil {
 		return false, false, err
 	}
 
+	icon, err := bundled.ReadFile("hyspayre.ico")
+	if err != nil {
+		return false, false, err
+	}
+	if err := os.WriteFile(iconPath, icon, 0600); err != nil {
+		return false, false, err
+	}
 	script := filepath.Join(tempDir, "welcome.ps1")
-	content := `param([string]$Banner,[string]$InstallDir)
+	content := `param([string]$Banner,[string]$Icon,[string]$InstallDir)
 $ErrorActionPreference='Stop'
 Add-Type -AssemblyName PresentationFramework,PresentationCore
 [xml]$xaml=@"
@@ -121,7 +129,7 @@ Add-Type -AssemblyName PresentationFramework,PresentationCore
           <RowDefinition Height="Auto"/>
           <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <TextBlock Grid.Row="0" Text="Hyspayre Launcher 0.2.3" Foreground="#C7D9EA" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,8" />
+        <TextBlock Grid.Row="0" Text="Hyspayre Launcher 0.2.4" Foreground="#C7D9EA" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,8" />
         <TextBlock Grid.Row="1" Text="Deine Spielebibliothek, dein Account und deine Freunde – alles an einem Ort." Foreground="#9FB4CB" FontSize="14" Margin="0,0,0,14" />
         <Grid Grid.Row="2">
           <Grid.ColumnDefinitions>
@@ -145,6 +153,7 @@ Add-Type -AssemblyName PresentationFramework,PresentationCore
 "@
 $reader=New-Object System.Xml.XmlNodeReader $xaml
 $window=[Windows.Markup.XamlReader]::Load($reader)
+$window.Icon=[System.Windows.Media.Imaging.BitmapFrame]::Create([uri](Resolve-Path -LiteralPath $Icon).Path)
 $window.FindName('BrandImage').Source=[System.Windows.Media.Imaging.BitmapImage]::new([uri](Resolve-Path -LiteralPath $Banner).Path)
 $installPath=$window.FindName('InstallPath')
 $desktopCheck=$window.FindName('DesktopCheck')
@@ -160,7 +169,7 @@ Write-Output $script:Result
 	if err := os.WriteFile(script, []byte(content), 0600); err != nil {
 		return false, false, err
 	}
-	out, err := commandOutput("powershell.exe", "-NoProfile", "-ExecutionPolicy", "Bypass", "-STA", "-File", script, bannerPath, dir)
+	out, err := commandOutput("powershell.exe", "-NoProfile", "-ExecutionPolicy", "Bypass", "-STA", "-File", script, bannerPath, iconPath, dir)
 	if err != nil {
 		return false, false, err
 	}

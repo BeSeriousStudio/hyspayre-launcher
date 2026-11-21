@@ -69,6 +69,7 @@ func main() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", s.index)
 	mux.HandleFunc("/style.css", s.static)
+	mux.HandleFunc("/favicon.ico", s.static)
 	mux.HandleFunc("/app.js", s.static)
 	mux.HandleFunc("/assets/", s.static)
 	mux.HandleFunc("/api/bootstrap", s.bootstrap)
@@ -204,6 +205,8 @@ func (s *server) static(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "image/webp")
 	case strings.HasSuffix(path, ".svg"):
 		w.Header().Set("Content-Type", "image/svg+xml")
+	case strings.HasSuffix(path, ".ico"):
+		w.Header().Set("Content-Type", "image/x-icon")
 	case strings.HasSuffix(path, ".png"):
 		w.Header().Set("Content-Type", "image/png")
 	}

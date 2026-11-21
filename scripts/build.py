@@ -20,6 +20,7 @@ def go_build(directory, destination):
     env.update(GOOS='windows', GOARCH='amd64', CGO_ENABLED='0')
     subprocess.run(['go','build','-trimpath','-ldflags=-s -w -H=windowsgui','-o',str(destination),'./'],cwd=directory,env=env,check=True)
 
+subprocess.run(['python3' if os.name != 'nt' else 'python', str(ROOT / 'scripts/gen_win_icon_syso.py')], cwd=ROOT, check=True)
 subprocess.run(['go','test','./...'],cwd=ROOT,check=True)
 launcher = DIST / 'Hyspayre-Launcher.exe'
 go_build(ROOT / 'cmd/launcher', launcher)

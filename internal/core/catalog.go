@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	ClientVersion          = "0.2.3"
+	ClientVersion          = "0.2.5"
 	CatalogURL             = "https://hyspayre.com/launcher/catalog.json"
 	PublicSite             = "https://hyspayre.com"
 	MaxPackageSize   int64 = 10 << 30

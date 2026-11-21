@@ -38,9 +38,10 @@ function render(){if(!snapshot)return;
  $('client-ver').textContent='Version '+snapshot.version;
  const rel=snapshot.catalog.launcher;
  const hasUpdate=rel&&compareVersion(rel.version,snapshot.version)>0&&rel.url;
- $('update-client').classList.toggle('hidden',!hasUpdate);
- $('update-alert').classList.toggle('hidden',!hasUpdate);
- $('update-description').textContent=hasUpdate?'Version '+rel.version+' ist verfügbar. Dein Client kann sich selbst aktualisieren.':online?'Dein Client ist auf dem neuesten Stand.':'Der Online-Katalog ist nicht erreichbar. Du kannst es später erneut versuchen.';
+ const managed=Boolean(snapshot.msix_managed);
+ $('update-client').classList.toggle('hidden',!hasUpdate||managed);
+ $('update-alert').classList.toggle('hidden',!hasUpdate&&!managed);
+ $('update-description').textContent=managed?(hasUpdate?'Eine neue Launcher-Version ist erhältlich. Die Installation wird über Windows App Installer bzw. den Microsoft Store aktualisiert.':'Launcher-Updates werden über Windows App Installer bzw. den Microsoft Store verwaltet.'):hasUpdate?'Version '+rel.version+' ist verfügbar. Dein Client kann sich selbst aktualisieren.':online?'Dein Client ist auf dem neuesten Stand.':'Der Online-Katalog ist nicht erreichbar. Du kannst es später erneut versuchen.';
 }
 function compareVersion(a,b){const p=String(a||'0').split('.').map(Number),q=String(b||'0').split('.').map(Number);for(let i=0;i<3;i++){if((p[i]||0)!==(q[i]||0))return (p[i]||0)>(q[i]||0)?1:-1}return 0;}
 function showView(next){view=next;document.querySelectorAll('.view').forEach(e=>e.classList.toggle('active',e.id==='view-'+view));document.querySelectorAll('.navitem').forEach(e=>e.classList.toggle('selected',e.dataset.view===view));$('view-breadcrumb').textContent=({discover:'ENTDECKEN',library:'MEINE BIBLIOTHEK',downloads:'DOWNLOADS & UPDATES',community:'FREUNDE & SPIELER',account:'MEIN SPIELACCOUNT',settings:'EINSTELLUNGEN'})[view]||view;document.querySelector('.content').scrollTop=0;if(next==='account')socialOpenAccount();if(next==='community')socialOpenCommunity();}

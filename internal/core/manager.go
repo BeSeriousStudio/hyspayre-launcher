@@ -37,6 +37,7 @@ type Settings struct {
 }
 
 type Snapshot struct {
+	MSIXManaged  bool                 `json:"msix_managed"`
 	Version      string               `json:"version"`
 	Catalog      Catalog              `json:"catalog"`
 	CatalogError string               `json:"catalog_error"`
@@ -135,7 +136,7 @@ func (m *Manager) saveState() error {
 func (m *Manager) Snapshot() Snapshot {
 	m.mu.RLock()
 	defer m.mu.RUnlock()
-	s := Snapshot{Version: ClientVersion, Catalog: m.Catalog, CatalogError: m.CatalogError, Installed: make(map[string]Installed), Tasks: make(map[string]Task), Settings: m.Settings}
+	s := Snapshot{MSIXManaged: IsMSIX(), Version: ClientVersion, Catalog: m.Catalog, CatalogError: m.CatalogError, Installed: make(map[string]Installed), Tasks: make(map[string]Task), Settings: m.Settings}
 	s.Catalog.Signature = "" // not needed by the visual interface
 	for k, v := range m.Installed {
 		s.Installed[k] = v
@@ -359,6 +360,11 @@ func (m *Manager) ChangeInstallRoot(root string) error {
 }
 
 func (m *Manager) LauncherUpdate() error {
+    // Never modify an MSIX package installed in WindowsApps: updates belong to
+    // Microsoft Store or Windows App Installer, and package contents are protected.
+    if IsMSIX() {
+        return errors.New("Dieser Launcher wurde als MSIX installiert. Updates erfolgen über den Microsoft Store oder Windows App Installer.")
+    }
 	m.mu.Lock()
 	r := m.Catalog.Launcher
 	if r.URL == "" || r.Version == "" || CompareVersion(r.Version, ClientVersion) <= 0 {

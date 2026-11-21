@@ -4,7 +4,7 @@ Open-source-ready Windows launcher for the Hyspayre universe. Multi-game
 installer, cryptographically signed update catalog, personal Hyspayre account,
 player search and friend requests (using the same Supabase RPCs as the website).
 
-**Current version: 0.2.3** · Go 1.23 · JavaScript, HTML and CSS · MIT code license.
+**Current version: 0.2.4** · Go 1.23 · JavaScript, HTML and CSS · MIT code license.
 
 ## Build from source
 
@@ -15,6 +15,7 @@ python scripts/build.py
 ```
 
 This produces `dist/Hyspayre-Launcher.exe` and `dist/Hyspayre-Setup.exe`.
+The build now produces Windows icon resources for **both** EXE files from `setup/hyspayre.ico` (using `scripts/gen_win_icon_syso.py`). The Edge app window additionally gets its own local favicon via `/favicon.ico`; the globe should no longer show in its title bar. Use the 0.2.4 release number and a freshly signed update catalog to distribute the changed binaries.
 The build program generates the embedded installer package and pins its SHA-256.
 A release is **not signed** automatically. Windows SmartScreen may warn.
 
@@ -55,12 +56,12 @@ from the public Hyspayre website at runtime; the Godot game remains private.
 
 1. Build both Windows binaries using `scripts/build.py`.
 2. In the *private* Hyspayre Publisher, keep the original private signing key
-   offline. Sign a new `launcher/catalog.json` with version 0.2.3 and the SHA-256
+   offline. Sign a new `launcher/catalog.json` with version 0.2.4 and the SHA-256
    of `Hyspayre-Launcher.exe`.
 3. Upload `Hyspayre-Setup.exe` and `Hyspayre-Launcher.exe` to
    `https://hyspayre.com/downloads/`, and **last** upload the signed catalog to
    `https://hyspayre.com/launcher/catalog.json`.
-4. Existing clients learn of version 0.2.3 from the signed catalog. New users
+4. Existing clients learn of version 0.2.4 from the signed catalog. New users
    download the installer. Never upload the private Publisher key.
 
 **If games have already been published:** do not overwrite the live catalog with
@@ -89,19 +90,26 @@ reviewed CI builds and apply separately. Do not add private keys to CI or commit
 
 ## Installer UI
 
-Version 0.2.3 adds a branded Windows welcome screen for the setup executable.
+Version 0.2.4 adds a branded Windows welcome screen for the setup executable.
 It uses the official Hyspayre logo and artwork, but still installs per-user
 without administrator rights. If PowerShell WPF is unavailable, the installer
 falls back to simple Windows dialog boxes.
 
-## Code signing policy
 
-[Code signing policy](CODE_SIGNING_POLICY.md) — Windows signing through SignPath Foundation is planned, **not approved or enabled** for this release.
+## Windows MSIX / Microsoft Store / Direktdownload
 
-## Privacy
+- Der bisherige Windows-EXE-Installer bleibt für direkte Downloads auf hyspayre.com erhalten.
+- `scripts/build_msix.py` und `.github/workflows/build-msix.yml` erstellen auf Windows einen
+  **unsignierten** Store-Einreichungs-Build mit `MakeAppx.exe`.
+- Die Identität und der Publisher müssen in GitHub Actions Variables (`MSIX_IDENTITY_NAME`,
+  `MSIX_PUBLISHER`) exakt mit der **App identity** im Microsoft Partner Center übereinstimmen.
+  Ohne diese Werte ist der Workflow ausdrücklich nur ein Entwicklungsbuild.
+- Eine MSIX-Datei außerhalb des Stores benötigt eine **vertrauenswürdige digitale Signatur**.
+- Die MSIX-Version ist `1.2.5.0`, die Anzeigeversion des Launchers `0.2.5`. Der erste
+  MSIX-Versionsblock darf bei einer Store-Einreichung nicht 0 sein.
+- Im MSIX-Modus ist das Selbst-Ersetzen der EXE deaktiviert; Updates laufen über Store/
+  App Installer. Spiel-Downloads und Supabase-Konten bleiben im per-user-Verzeichnis.
+- Website-MSI(X)-Download erst aktivieren, wenn eine signierte MSIX samt AppInstaller-Datei
+  öffentlich abrufbar ist.
 
-[Desktop launcher privacy information](PRIVACY.md) — **draft requiring operator review before public release**, and [Hyspayre legal/privacy page](https://hyspayre.com/rechtliches.html).
-
-## Artwork licensing
-
-See [BRAND_ASSETS.md](BRAND_ASSETS.md). Rights and open-license choices for the bundled brand imagery are not finalized.
+Siehe `msix/README.md`.

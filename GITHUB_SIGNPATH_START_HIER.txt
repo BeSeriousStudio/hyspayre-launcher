@@ -1,0 +1,14 @@
+HYSPAYRE OPEN SOURCE / SIGNPATH
+================================
+
+Entpacke diese ZIP in ein neues öffentliches GitHub-Repository.
+README.md, LICENSE, SECURITY.md, BRAND_ASSETS.md und SIGNPATH.md lesen.
+Die .github/workflows/build.yml baut aus geprüftem Code.
+Die privaten Spiele und Publisher-Schlüssel dürfen nicht im Repo liegen.
+Die Artwork-Lizenz muss der Rechteinhaber vor Veröffentlichung festlegen.
+SignPath-Zulassung ist nicht garantiert.
+
+WICHTIG ZUR REIHENFOLGE: Zuerst Launcher authenticode-signieren,
+dann den signierten Launcher in den Setup-Payload einbetten und das Setup signieren.
+Anschließend den internen Update-Katalog mit dem signierten Launcher-Hash
+privat aktualisieren und mit dem separaten Publisher-Key signieren.
